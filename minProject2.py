@@ -6,11 +6,11 @@ import os
 def calc_mean_erp(trial_points, ecog_data):
     try:
         # Load data
-        trialPoints = pd.read_csv(trial_points, header=None)
-        trialPoints.columns = ['start', 'peak', 'finger']
-        trialPoints = trialPoints.astype({'start': 'int', 'peak': 'int', 'finger': 'int'})
+        trial_points_arg = pd.read_csv(trial_points, header=None)
+        trial_points_arg.columns = ['start', 'peak', 'finger']
+        trial_points_arg = trial_points_arg.astype({'start': 'int', 'peak': 'int', 'finger': 'int'})
 
-        ecogData = pd.read_csv(ecog_data, header=None).squeeze("columns").to_numpy()
+        ecog_data_arg = pd.read_csv(ecog_data, header=None).squeeze("columns").to_numpy()
 
         # Parameters
         pre_movement = 200  # ms before the starting point
@@ -22,15 +22,15 @@ def calc_mean_erp(trial_points, ecog_data):
 
         for finger in range(1, 6):
             # Filter trials for the current finger
-            finger_trials = trialPoints[trialPoints['finger'] == finger]
+            finger_trials = trial_points_arg[trial_points_arg['finger'] == finger]
             
             # Collect ERP segments for the finger
             erp_segments = []
             for _, trial in finger_trials.iterrows():
                 start_idx = trial['start'] - pre_movement
                 end_idx = trial['start'] + post_movement
-                if start_idx >= 0 and end_idx < len(ecogData):
-                    erp_segments.append(ecogData[start_idx:end_idx + 1])
+                if start_idx >= 0 and end_idx < len(ecog_data_arg):
+                    erp_segments.append(ecog_data_arg[start_idx:end_idx + 1])
             
             # Average the segments
             if erp_segments:
